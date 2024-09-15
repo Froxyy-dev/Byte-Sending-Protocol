@@ -104,20 +104,20 @@ Each packet consists of a header with fixed fields, followed by the payload (if 
 
 2. **Run the Server**:
    ```bash
-   ./ppcbs [tcp|udp] <port>
+   ./bin/ppcbs [tcp|udp] <port>
    ```
    Example:
    ```bash
-   ./ppcbs tcp 8080
+   ./bin/ppcbs tcp 8080
    ```
 
 3. **Run the Client**:
    ```bash
-   ./ppcbc [tcp|udp|udpr] <server_address> <port>
+   ./bin/ppcbc [tcp|udp|udpr] <server_address> <port> < <file>
    ```
    Example:
    ```bash
-   ./ppcbc tcp 127.0.0.1 8080
+   ./bin/ppcbc tcp 127.0.0.1 8080 < sample.txt
    ```
 
 4. **Testing**:
