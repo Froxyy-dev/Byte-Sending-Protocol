@@ -4,24 +4,37 @@ LFLAGS =
 
 .PHONY: all clean
 
-TARGET1 = ppcbc
-TARGET2 = ppcbs
+BIN_DIR = bin
+BUILD_DIR = build
+SRC_DIR = src
+INCLUDE_DIR = include
+
+TARGET1 = $(BIN_DIR)/ppcbc
+TARGET2 = $(BIN_DIR)/ppcbs
+
+# Source files
+SRC1 = $(SRC_DIR)/ppcbc.c
+SRC2 = $(SRC_DIR)/ppcbs.c
+COMMON_SRC = $(SRC_DIR)/ppcb-common.c $(SRC_DIR)/ppcb-udp.c $(SRC_DIR)/ppcb-udpr.c $(SRC_DIR)/ppcb-tcp.c $(SRC_DIR)/err.c
+
+# Object files
+OBJ1 = $(BUILD_DIR)/ppcbc.o
+OBJ2 = $(BUILD_DIR)/ppcbs.o
+COMMON_OBJ = $(BUILD_DIR)/ppcb-common.o $(BUILD_DIR)/ppcb-udp.o $(BUILD_DIR)/ppcb-udpr.o $(BUILD_DIR)/ppcb-tcp.o $(BUILD_DIR)/err.o
 
 all: $(TARGET1) $(TARGET2)
 
-$(TARGET1): $(TARGET1).o ppcb-common.o ppcb-udp.o ppcb-udpr.o ppcb-tcp.o err.o
-$(TARGET2): $(TARGET2).o ppcb-common.o ppcb-udp.o ppcb-udpr.o ppcb-tcp.o err.o
+$(TARGET1): $(OBJ1) $(COMMON_OBJ)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -o $@ $^
 
-# To są zależności wygenerowane automatycznie za pomocą polecenia `gcc -MM *.c`.
+$(TARGET2): $(OBJ2) $(COMMON_OBJ)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -o $@ $^
 
-err.o: err.c err.h
-ppcbc.o: ppcbc.c err.h ppcb-common.h ppcb-tcp.h ppcb-udp.h ppcb-udpr.h
-ppcb-common.o: ppcb-common.c ppcb-common.h err.h protconst.h
-ppcbs.o: ppcbs.c ppcb-common.h err.h ppcb-tcp.h ppcb-udp.h ppcb-udpr.h
-ppcb-tcp.o: ppcb-tcp.c ppcb-tcp.h err.h ppcb-common.h protconst.h
-ppcb-udp.o: ppcb-udp.c ppcb-udp.h err.h ppcb-common.h
-ppcb-udpr.o: ppcb-udpr.c ppcb-udpr.h err.h ppcb-common.h protconst.h
-
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 
 clean:
-	rm -f $(TARGET1) $(TARGET2) *.o *~
+	rm -rf $(BIN_DIR) $(BUILD_DIR)
